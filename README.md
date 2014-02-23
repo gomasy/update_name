@@ -9,6 +9,7 @@ update_nameするプログラムです。Rubyで書いてます。
 インストールされていない場合は予め導入して置いてください。
 ```sh
 $ git clone https://github.com/gomashio/update_name.git
+$ cd ./update_name
 $ mv keys.yml.example keys.yml
 
 // キー諸所を記述

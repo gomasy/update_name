@@ -1,10 +1,11 @@
 update_name
 ===========
+[![Dependency Status](https://gemnasium.com/gomashio/update_name.png)](https://gemnasium.com/gomashio/update_name)
 
-##これなに？
+## これなに？
 update_nameするプログラムです。Rubyで書いてます。
 
-##いれかた
+## いれかた
 前提条件として、Ruby 1.9以上が必要です。  
 インストールされていない場合は予め導入して置いてください。
 ```sh
@@ -16,16 +17,16 @@ $ mv keys.yml.example keys.yml
 $ vim keys.yml
 ```
 
-##実行方法
+## 実行方法
 ```sh
 $ chmod +x main.rb
 $ nohup ./main.rb &> /dev/null &
 ```
 
-##Require Gems
+## Require Gems
 * twitter >= 5.7.0
 
-##LICENSE
+## LICENSE
 Copryright 2013-2014, Gomashio  
 Licensed MIT  
 http://opensource.org/licenses/mit-license.php

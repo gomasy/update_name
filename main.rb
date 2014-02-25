@@ -47,7 +47,7 @@ loop do
         @allowed_user = object
       when Twitter::Tweet
         tweet = CGI.unescapeHTML(object.text.gsub(/@|＠/, "(at)"))
-        if tweet =~ /^(?!RT).*\(at\)#{tokens["screen_name"]}\supdate_name\s(.+?)$/
+        if tweet =~ /^(?!RT).*\(at\)#{tokens["screen_name"]}\s+update_name\s+(.+?)$/
           update_name(object, $1)
         elsif tweet =~ /^(?!RT)(.+?)(?:\(\s*\(at\)#{tokens["screen_name"]}\s*\)|（\s*\(at\)#{tokens["screen_name"]}\s*）)$/
           update_name(object, $1)

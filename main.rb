@@ -31,16 +31,12 @@ def update_name(status, name)
   end
   if @found
     @rest_client.update_profile(:name => name)
-    @rest_client.update(
-      "@#{status.user.screen_name} さんのご要望により \"#{name}\" へ改名しました",
-      :in_reply_to_status_id => status.id
-      )
+    tweet = "@#{status.user.screen_name} さんのご要望により \"#{name}\" へ改名しました"
   end
 rescue Twitter::Error::Forbidden => ex
-  @rest_client.update(
-    "@#{status.user.screen_name} #{ex.message}",
-    :in_reply_to_status_id => status.id
-  )
+  tweet = "@#{status.user.screen_name} #{ex.message}"
+ensure
+  @rest_client.update(tweet, :in_reply_to_status_id => status.id)
 end
 
 loop do

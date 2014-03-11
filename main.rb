@@ -46,10 +46,10 @@ loop do
       when Twitter::Streaming::FriendList
         @allowed_user = object
       when Twitter::Tweet
-        tweet = CGI.unescapeHTML(object.text.gsub(/@|＠/, "(at)"))
-        if tweet =~ /^(?!RT).*\(at\)#{tokens["screen_name"]}\s+update_name\s+(.+)$/
+        case CGI.unescapeHTML(object.text.gsub(/@|＠/, "(at)"))
+        when /^(?!RT).*\(at\)#{tokens["screen_name"]}\s+update_name\s+(.+)$/
           update_name(object, $1)
-        elsif tweet =~ /^(?!RT)(.+)(?:\(\s*\(at\)#{tokens["screen_name"]}\s*\)|（\s*\(at\)#{tokens["screen_name"]}\s*）)$/
+        when /^(?!RT)(.+)(?:\(\s*\(at\)#{tokens["screen_name"]}\s*\)|（\s*\(at\)#{tokens["screen_name"]}\s*）)$/
           update_name(object, $1)
         end
       end

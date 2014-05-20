@@ -1,61 +1,12 @@
-#!/usr/bin/ruby
 # coding: utf-8
 
-require "twitter"
 require "yaml"
-require "cgi"
+require "./account.rb"
 
-tokens = YAML.load_file("keys.yml")
-
-@rest_client = Twitter::REST::Client.new do |config|
-  config.consumer_key               = tokens["consumer_key"]
-  config.consumer_secret            = tokens["consumer_secret"]
-  config.access_token               = tokens["oauth_token"]
-  config.access_token_secret        = tokens["oauth_token_secret"]
+tokens = YAML.load_file("./keys.yml")
+account = Account.new(tokens)
+files = Dir.glob(File.expand_path("../plugins/*.rb", __FILE__))
+files.each do |file|
+  account.instance_eval(File.read(file))
 end
-
-stream_client = Twitter::Streaming::Client.new do |config|
-  config.consumer_key               = tokens["consumer_key"]
-  config.consumer_secret            = tokens["consumer_secret"]
-  config.access_token               = tokens["oauth_token"]
-  config.access_token_secret        = tokens["oauth_token_secret"]
-end
-
-def update_name(status, name)
-  @found = false
-  @allowed_user.length.times do |i|
-    if @allowed_user[i] == status.user.id
-      @found = true
-      break
-    end
-  end
-  if @found
-    @rest_client.update_profile(:name => name)
-    tweet = "@#{status.user.screen_name} さんのご要望により \"#{name}\" へ改名しました"
-  end
-rescue Twitter::Error::Forbidden => ex
-  tweet = "@#{status.user.screen_name} #{ex.message}"
-ensure
-  @rest_client.update(tweet, :in_reply_to_status_id => status.id)
-end
-
-loop do
-  begin
-    stream_client.user do |object|
-      case object
-      when Twitter::Streaming::FriendList
-        @allowed_user = object
-      when Twitter::Tweet
-        case CGI.unescapeHTML(object.text.gsub(/@|＠/, "(at)"))
-        when /^(?!RT).*\(at\)#{tokens["screen_name"]}\s+update_name\s+(.+)$/
-          update_name(object, $1)
-        when /^(?!RT)(.+)(?:\(\s*\(at\)#{tokens["screen_name"]}\s*\)|（\s*\(at\)#{tokens["screen_name"]}\s*）)$/
-          update_name(object, $1)
-        end
-      end
-    end
-  rescue => ex
-    puts "System -> #{ex.message}"
-    sleep(5)
-  end
-end
+account.start

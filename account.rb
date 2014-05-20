@@ -3,9 +3,9 @@
 require "twitter"
 
 class Account
-  def initialize(tokens)
-    @rest = Twitter::REST::Client.new(tokens)
-    @stream = Twitter::Streaming::Client.new(tokens)
+  def initialize(token)
+    @rest = Twitter::REST::Client.new(token)
+    @stream = Twitter::Streaming::Client.new(token)
     @callbacks = {}
   end
 

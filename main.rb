@@ -4,9 +4,18 @@ require "yaml"
 require "./account.rb"
 
 tokens = YAML.load_file("./keys.yml")
-account = Account.new(tokens)
-files = Dir.glob(File.expand_path("../plugins/*.rb", __FILE__))
-files.each do |file|
-  account.instance_eval(File.read(file))
+tokens.each do |token|
+  @threads ||= []
+  @threads << Thread.start do
+    account = Account.new(token)
+    files = Dir.glob(File.expand_path("../plugins/*.rb", __FILE__))
+    files.each do |file|
+      account.instance_eval(File.read(file))
+    end
+    account.start
+  end
 end
-account.start
+
+@threads.each do |thread|
+  thread.join
+end

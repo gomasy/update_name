@@ -6,7 +6,7 @@ require "./account.rb"
 tokens = YAML.load_file("./keys.yml")
 tokens.each do |token|
   @threads ||= []
-  @threads << Thread.start do
+  @threads << Thread.new do
     account = Account.new(token)
     files = Dir.glob(File.expand_path("../plugins/*.rb", __FILE__))
     files.each do |file|

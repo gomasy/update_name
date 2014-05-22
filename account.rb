@@ -23,17 +23,21 @@ class Account
   end
 
   def start
-    @stream.user do |obj|
-      case obj
-      when Twitter::Tweet
-        callback(:tweet, obj)
-      when Twitter::Streaming::Event
-        callback(:event, obj)
-      when Twitter::Streaming::FriendList
-        callback(:friends, obj)
-      when Twitter::Streaming::DeletedTweet
-        callback(:delete, obj)
+    begin
+      @stream.user do |obj|
+        case obj
+        when Twitter::Tweet
+          callback(:tweet, obj)
+        when Twitter::Streaming::Event
+          callback(:event, obj)
+        when Twitter::Streaming::FriendList
+          callback(:friends, obj)
+        when Twitter::Streaming::DeletedTweet
+          callback(:delete, obj)
+        end
       end
+    rescue Exception => ex
+      puts "System -> #{ex.message}"
     end
   end
 end

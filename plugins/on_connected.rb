@@ -1,6 +1,6 @@
 # coding: utf-8
 
-register_callback(:friends) do
+register_callback(:friends) do |obj|
   @credentials = @rest.verify_credentials
   @followings = obj
   @followings << @credentials.id

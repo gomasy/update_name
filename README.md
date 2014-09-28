@@ -21,7 +21,7 @@ $ nohup ./main.rb &> /dev/null &
 ## 設定について
 テンプレートファイル (keys.yml.example) を keys.yml にリネームし、任意のエディタで開き各トークンを記述して下さい。  
 なお、マルチアカウントにも対応しておりますので、幾らでもアカウントを増やすことが出来ます。  
-YAML の配列の記述法については[こちら](http://magazine.rubyist.net/?0009-YAML#l3)をご覧ください
+YAML の配列の記述法については[こちら](http://magazine.rubyist.net/?0009-YAML#l3)をご覧ください。
 
 ## Require Gems
 * twitter >= 5.7.0

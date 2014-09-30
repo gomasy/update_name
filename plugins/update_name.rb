@@ -4,6 +4,9 @@ require "cgi"
 
 def update_name(obj, name)
   begin
+    if name.include?("@")
+      name.sub!(/@/, "@​")
+    end
     @rest.update_profile(:name => name)
     @rest.update(
       "@#{obj.user.screen_name} のせいで「#{name}」に改名する羽目になりました",

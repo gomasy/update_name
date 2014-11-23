@@ -3,22 +3,18 @@
 require "cgi"
 
 def update_name(obj, name)
-  begin
-    if name.include?("@")
-      name.sub!(/@/, "@​")
-    end
-    @rest.update_profile(:name => name)
-    @rest.update(
-      "@#{obj.user.screen_name} のせいで「#{name}」に改名する羽目になりました",
-      :in_reply_to_status_id => obj.id
-    )
-    puts "System -> renamed to \'#{name}\' by @#{obj.user.screen_name}"
-  rescue Twitter::Error::Forbidden => ex
-    @rest.update(
-      "@#{obj.user.screen_name} #{ex.message}",
-      :in_reply_to_status_id => obj.id
-    )
-  end
+  name.sub!(/@|＠/, "@​")
+  @rest.update_profile(:name => name)
+  @rest.update(
+    "@#{obj.user.screen_name} のせいで「#{name}」に改名する羽目になりました",
+    :in_reply_to_status_id => obj.id
+  )
+  puts "System -> renamed to \'#{name}\' by @#{obj.user.screen_name}"
+rescue Twitter::Error::Forbidden => ex
+  @rest.update(
+    "@#{obj.user.screen_name} #{ex.message}",
+    :in_reply_to_status_id => obj.id
+  )
 end
 
 register_callback(:tweet) do |obj|

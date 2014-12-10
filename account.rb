@@ -6,6 +6,7 @@ class Account
   def initialize(token)
     @rest = Twitter::REST::Client.new(token)
     @stream = Twitter::Streaming::Client.new(token)
+    @credentials = @rest.verify_credentials
     @callbacks = {}
   end
 
@@ -24,22 +25,41 @@ class Account
 
   def start
     loop do
-      begin
-        @stream.user do |obj|
-          case obj
-          when Twitter::Tweet
-            callback(:tweet, obj)
-          when Twitter::Streaming::Event
-            callback(:event, obj)
-          when Twitter::Streaming::FriendList
-            callback(:friends, obj)
-          when Twitter::Streaming::DeletedTweet
-            callback(:delete, obj)
+      @stream.user do |obj|
+        following = false
+        case obj
+        when Twitter::Tweet
+          @followings.each do |obj|
+            if obj.user.id == id
+              following = true
+              break
+            end
           end
+          callback(:tweet, obj) if following
+        when Twitter::Streaming::DeletedTweet
+          @followings.each do |obj|
+            if obj.user.id == id
+              following = true
+              break
+            end
+          end
+          callback(:delete, obj) if following
+        when Twitter::Streaming::Event
+          @followings.each do |obj|
+            if obj.source.id == id
+              following = true
+              break
+            end
+          end
+          callback(:event, obj) if following
+        when Twitter::Streaming::FriendList
+          @followings = obj
+          @followings << @credentials.id
+          callback(:friends, obj)
         end
-      rescue Exception => ex
-        puts "System -> #{ex.message}"
       end
     end
+  rescue Exception => ex
+    puts "System -> #{ex.message}"
   end
 end

@@ -3,7 +3,7 @@
 require "cgi"
 
 def update_name(obj, name)
-  name.sub!(/@|＠/, "@​")
+  name.sub!(/@|＠/, "@\u200b")
   @rest.update_profile(:name => name)
   @rest.update(
     "@#{obj.user.screen_name} のせいで「#{name}」に改名する羽目になりました",
@@ -18,8 +18,8 @@ rescue Twitter::Error::Forbidden => ex
 end
 
 register_callback(:tweet) do |obj|
-  following = false
   screen_name = @credentials.screen_name
+  following = false
   @followings.each do |id|
     if obj.user.id == id
       following = true
@@ -30,7 +30,7 @@ register_callback(:tweet) do |obj|
     case CGI.unescapeHTML(obj.text)
     when /^(?!RT).*@#{screen_name}\supdate_name\s(.+?)$/
       update_name(obj, $1)
-    when /^(?!RT)(.+?)(?:\(\s?@#{screen_name}\s?\)|（\s?@#{screen_name}\s?）)$/
+    when /^(?!RT)(.+?)(\(\s?@#{screen_name}\s?\)|（\s?@#{screen_name}\s?）)$/
       update_name(obj, $1)
     end
   end

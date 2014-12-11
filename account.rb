@@ -16,11 +16,7 @@ class Account
   end
 
   def callback(event, obj)
-    if @callbacks.key?(event)
-      @callbacks[event].each do |c|
-        c.call(obj)
-      end
-    end
+    @callbacks[event].each{|c|c.call(obj)} if @callbacks.key?(event)
   end
 
   def start
@@ -29,29 +25,11 @@ class Account
         following = false
         case obj
         when Twitter::Tweet
-          @followings.each do |id|
-            if obj.user.id == id
-              following = true
-              break
-            end
-          end
-          callback(:tweet, obj) if following
+          callback(:tweet, obj) if is_allowed(obj.user.id)
         when Twitter::Streaming::DeletedTweet
-          @followings.each do |id|
-            if obj.user_id == id
-              following = true
-              break
-            end
-          end
-          callback(:delete, obj) if following
+          callback(:delete, obj) if is_allowed(obj.user_id)
         when Twitter::Streaming::Event
-          @followings.each do |id|
-            if obj.source.id == id
-              following = true
-              break
-            end
-          end
-          callback(:event, obj) if following
+          callback(:event, obj) if is_allowed(obj.source.id)
         when Twitter::Streaming::FriendList
           @followings = obj
           @followings << @credentials.id
@@ -61,5 +39,13 @@ class Account
     end
   rescue Exception => ex
     puts "System -> #{ex.message}"
+  end
+
+  def is_allowed(user_id)
+    following = false
+    @followings.each do |id|
+      following = true; break if user_id == id
+    end
+    return following
   end
 end

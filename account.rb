@@ -38,7 +38,7 @@ class Account
           callback(:tweet, obj) if following
         when Twitter::Streaming::DeletedTweet
           @followings.each do |id|
-            if obj.user.id == id
+            if obj.user_id == id
               following = true
               break
             end

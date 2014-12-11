@@ -44,7 +44,10 @@ class Account
   def is_allowed(user_id)
     following = false
     @followings.each do |id|
-      following = true; break if user_id == id
+      if user_id == id
+        following = true
+        break
+      end
     end
     return following
   end

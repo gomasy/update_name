@@ -29,7 +29,7 @@ class Account
         following = false
         case obj
         when Twitter::Tweet
-          @followings.each do |obj|
+          @followings.each do |id|
             if obj.user.id == id
               following = true
               break
@@ -37,7 +37,7 @@ class Account
           end
           callback(:tweet, obj) if following
         when Twitter::Streaming::DeletedTweet
-          @followings.each do |obj|
+          @followings.each do |id|
             if obj.user.id == id
               following = true
               break
@@ -45,7 +45,7 @@ class Account
           end
           callback(:delete, obj) if following
         when Twitter::Streaming::Event
-          @followings.each do |obj|
+          @followings.each do |id|
             if obj.source.id == id
               following = true
               break

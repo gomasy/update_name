@@ -16,11 +16,11 @@ class Account
         following = false
         case obj
         when Twitter::Tweet
-          callback(:tweet, obj) if is_allowed(obj.user.id)
+          callback(:tweet, obj) if is_allowed?(obj.user.id)
         when Twitter::Streaming::DeletedTweet
-          callback(:delete, obj) if is_allowed(obj.user_id)
+          callback(:delete, obj) if is_allowed?(obj.user_id)
         when Twitter::Streaming::Event
-          callback(:event, obj) if is_allowed(obj.source.id)
+          callback(:event, obj) if is_allowed?(obj.source.id)
         when Twitter::Streaming::FriendList
           @followings = obj
           @followings << @credentials.id
@@ -42,7 +42,7 @@ class Account
     @callbacks[event].each{|c|c.call(obj)} if @callbacks.key?(event)
   end
 
-  def is_allowed(user_id)
+  def is_allowed?(user_id)
     following = false
     @followings.each do |id|
       if user_id == id

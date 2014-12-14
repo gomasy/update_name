@@ -10,15 +10,6 @@ class Account
     @callbacks = {}
   end
 
-  def register_callback(event, &blk)
-    @callbacks[event] ||= []
-    @callbacks[event] << blk
-  end
-
-  def callback(event, obj)
-    @callbacks[event].each{|c|c.call(obj)} if @callbacks.key?(event)
-  end
-
   def start
     loop do
       @stream.user do |obj|
@@ -41,6 +32,16 @@ class Account
     puts "System -> #{ex.message}"
   end
 
+  private
+  def register_callback(event, &blk)
+    @callbacks[event] ||= []
+    @callbacks[event] << blk
+  end
+
+  def callback(event, obj)
+    @callbacks[event].each{|c|c.call(obj)} if @callbacks.key?(event)
+  end
+
   def is_allowed(user_id)
     following = false
     @followings.each do |id|
@@ -50,5 +51,17 @@ class Account
       end
     end
     return following
+  end
+
+  def twitter
+    return @rest
+  end
+
+  def screen_name
+    return @credentials.screen_name
+  end
+
+  def user_id
+    return @credentials.user_id
   end
 end

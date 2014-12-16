@@ -3,11 +3,12 @@
 require "twitter"
 
 class Account
-  attr_reader :rest
+  attr_reader :rest, :user
 
   def initialize(token)
     @rest = Twitter::REST::Client.new(token)
     @stream = Twitter::Streaming::Client.new(token)
+    @user = @rest.verify_credentials
     @callbacks = {}
   end
 
@@ -31,10 +32,6 @@ class Account
     end
   rescue Exception => ex
     puts "System -> #{ex.message}"
-  end
-
-  def user
-    @rest.verify_credentials
   end
 
   def add_plugin(filename)

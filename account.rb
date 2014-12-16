@@ -38,7 +38,7 @@ class Account
     Plugin.new(self, filename)
   end
 
-  def register_callback(event, &blk)
+  def register_callback(event, blk)
     @callbacks[event] ||= []
     @callbacks[event] << blk
   end

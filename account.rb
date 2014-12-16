@@ -29,6 +29,8 @@ class Account
         end
       end
     end
+  rescue Exception => ex
+    puts "System -> #{ex.message}"
   end
 
   def user

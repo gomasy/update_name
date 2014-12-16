@@ -8,7 +8,7 @@ class Plugin
   end
 
   def on_event(event, &blk)
-    @account.register_callback(event, &blk)
+    @account.register_callback(event, blk)
   end
 
   def twitter

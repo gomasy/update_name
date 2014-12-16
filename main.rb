@@ -2,7 +2,9 @@
 # coding: utf-8
 
 require "yaml"
+
 require "./account.rb"
+require "./plugin.rb"
 
 tokens = YAML.load_file("./keys.yml")
 tokens.each do |token|
@@ -11,7 +13,7 @@ tokens.each do |token|
     account = Account.new(token)
     files = Dir.glob(File.expand_path("../plugins/*.rb", __FILE__))
     files.each do |file|
-      account.instance_eval(File.read(file))
+      account.add_plugin(file)
     end
     account.start
   end

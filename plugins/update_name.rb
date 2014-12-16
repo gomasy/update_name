@@ -17,7 +17,7 @@ rescue Twitter::Error::Forbidden => ex
   )
 end
 
-register_callback(:tweet) do |obj|
+on_event(:tweet) do |obj|
   case CGI.unescapeHTML(obj.text)
   when /^(?!RT).*@#{screen_name}\supdate_name\s(.+?)$/
     update_name(obj, $1)

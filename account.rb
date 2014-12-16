@@ -3,10 +3,11 @@
 require "twitter"
 
 class Account
+  attr_reader :rest
+
   def initialize(token)
     @rest = Twitter::REST::Client.new(token)
     @stream = Twitter::Streaming::Client.new(token)
-    @credentials = @rest.verify_credentials
     @callbacks = {}
   end
 
@@ -23,21 +24,27 @@ class Account
           callback(:event, obj) if is_allowed?(obj.source.id)
         when Twitter::Streaming::FriendList
           @followings = obj
-          @followings << @credentials.id
+          @followings << user.id
           callback(:friends, obj)
         end
       end
     end
-  rescue Exception => ex
-    puts "System -> #{ex.message}"
   end
 
-  private
+  def user
+    @rest.verify_credentials
+  end
+
+  def add_plugin(filename)
+    Plugin.new(self, filename)
+  end
+
   def register_callback(event, &blk)
     @callbacks[event] ||= []
     @callbacks[event] << blk
   end
 
+  private
   def callback(event, obj)
     @callbacks[event].each{|c|c.call(obj)} if @callbacks.key?(event)
   end
@@ -51,17 +58,5 @@ class Account
       end
     end
     return following
-  end
-
-  def twitter
-    return @rest
-  end
-
-  def screen_name
-    return @credentials.screen_name
-  end
-
-  def user_id
-    return @credentials.user_id
   end
 end

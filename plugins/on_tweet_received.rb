@@ -3,6 +3,5 @@
 require "cgi"
 
 on_event(:tweet) do |obj|
-  tweet = CGI.unescapeHTML(obj.text)
-  puts "Tweet -> @#{obj.user.screen_name}: #{tweet}"
+  puts "Tweet -> @#{obj.user.screen_name}: #{CGI.unescapeHTML(obj.text)}"
 end

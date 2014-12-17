@@ -37,17 +37,15 @@ class Account
   end
 
   def add_plugin(filename)
-    Plugin.new(self, filename)
-  end
+    cb = Plugin.new(self, filename).event
 
-  def register_callback(event, blk)
-    @callbacks[event] ||= []
-    @callbacks[event] << blk
+    @callbacks[cb["type"]] ||= []
+    @callbacks[cb["type"]] << cb["blk"]
   end
 
   private
-  def callback(event, obj)
-    @callbacks[event].each{|c|c.call(obj)} if @callbacks.key?(event)
+  def callback(type, obj)
+    @callbacks[type].each{|c|c.call(obj)} if @callbacks.key?(type)
   end
 
   def is_allowed?(user_id)

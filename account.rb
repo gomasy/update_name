@@ -15,23 +15,25 @@ class Account
   def start
     loop do
       @stream.user do |obj|
-        following = false
-        case obj
-        when Twitter::Tweet
-          callback(:tweet, obj) if is_allowed?(obj.user.id)
-        when Twitter::Streaming::DeletedTweet
-          callback(:delete, obj) if is_allowed?(obj.user_id)
-        when Twitter::Streaming::Event
-          callback(:event, obj) if is_allowed?(obj.source.id)
-        when Twitter::Streaming::FriendList
-          @followings = obj
-          @followings << user.id
-          callback(:friends, obj)
+        begin
+          following = false
+          case obj
+          when Twitter::Tweet
+            callback(:tweet, obj) if is_allowed?(obj.user.id)
+          when Twitter::Streaming::DeletedTweet
+            callback(:delete, obj) if is_allowed?(obj.user_id)
+          when Twitter::Streaming::Event
+            callback(:event, obj) if is_allowed?(obj.source.id)
+          when Twitter::Streaming::FriendList
+            @followings = obj
+            @followings << user.id
+            callback(:friends, obj)
+          end
+        rescue Exception => ex
+          puts "System -> #{ex.message}"
         end
       end
     end
-  rescue Exception => ex
-    puts "System -> #{ex.message}"
   end
 
   def add_plugin(filename)

@@ -1,14 +1,16 @@
 # coding: utf-8
 
 class Plugin
+  attr_reader :event
+
   def initialize(account, filename)
     @account = account
 
     self.instance_eval(File.read(filename))
   end
 
-  def on_event(event, &blk)
-    @account.register_callback(event, blk)
+  def on_event(type, &blk)
+    @event = {"type" => type, "blk" => blk}
   end
 
   def twitter

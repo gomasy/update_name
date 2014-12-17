@@ -10,7 +10,7 @@ class Plugin
   end
 
   def on_event(type, &blk)
-    @event = {"type" => type, "blk" => blk}
+    @event = { "type" => type, "blk" => blk }
   end
 
   def twitter

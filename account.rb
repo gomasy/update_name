@@ -39,8 +39,8 @@ class Account
   def add_plugin(filename)
     cb = Plugin.new(self, filename).event
 
-    @callbacks[cb["type"]] ||= []
-    @callbacks[cb["type"]] << cb["blk"]
+    @callbacks[cb[:type]] ||= []
+    @callbacks[cb[:type]] << cb[:blk]
   end
 
   private

@@ -1,6 +1,6 @@
 update_name
 ===========
-[![Code Climate](https://codeclimate.com/repos/549081e669568044e0006936/badges/51b7aa434d04e147aaa9/gpa.svg)](https://codeclimate.com/repos/549081e669568044e0006936/feed)
+[![Code Climate](https://codeclimate.com/github/Gomasy/update_name/badges/gpa.svg)](https://codeclimate.com/github/Gomasy/update_name)
 [![Dependency Status](https://gemnasium.com/gomashio/update_name.png)](https://gemnasium.com/gomashio/update_name)
 
 ## これなに？

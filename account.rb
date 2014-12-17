@@ -26,7 +26,7 @@ class Account
             callback(:event, obj) if is_allowed?(obj.source.id)
           when Twitter::Streaming::FriendList
             @followings = obj
-            @followings << user.id
+            @followings << @user.id
             callback(:friends, obj)
           end
         rescue Exception => ex

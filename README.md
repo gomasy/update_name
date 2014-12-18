@@ -1,7 +1,7 @@
 update_name
 ===========
 [![Code Climate](https://img.shields.io/codeclimate/github/Gomasy/update_name.svg?style=flat)](https://codeclimate.com/github/Gomasy/update_name)
-[![Dependency Status](https://img.shields.io/gemnasium/Gomasy/update_name.svg?style=flat)](https://gemnasium.com/gomashio/update_name)
+[![Dependency Status](https://img.shields.io/gemnasium/Gomasy/update_name.svg?style=flat)](https://gemnasium.com/Gomasy/update_name)
 
 ## これなに？
 update_name するプログラムです。Ruby で書いてます。

@@ -12,7 +12,7 @@ class Account
     @callbacks = {}
   end
 
-  def start
+  def connect
     loop do
       @stream.user do |obj|
         begin

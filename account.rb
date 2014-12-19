@@ -16,7 +16,6 @@ class Account
     loop do
       @stream.user do |obj|
         begin
-          following = false
           case obj
           when Twitter::Tweet
             callback(:tweet, obj) if is_allowed?(obj.user.id)

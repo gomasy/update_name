@@ -2,7 +2,7 @@
 
 require "twitter"
 
-class TwitterBot
+module TwitterBot
   class Account
     attr_reader :rest, :user
 

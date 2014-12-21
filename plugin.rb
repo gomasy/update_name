@@ -6,6 +6,7 @@ module TwitterBot
 
     def initialize(account, filename)
       @account = account
+      @event = {}
 
       self.instance_eval(File.read(filename))
     end

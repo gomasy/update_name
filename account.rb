@@ -13,7 +13,7 @@ module TwitterBot
       @callbacks = {}
     end
 
-    def start_streaming
+    def start
       loop do
         @stream.user do |obj|
           begin
@@ -26,7 +26,7 @@ module TwitterBot
               callback(:event, obj) if is_allowed?(obj.source.id)
             when Twitter::Streaming::FriendList
               @followings = obj
-              @followings << @user.id
+              @followings << user.id
               callback(:friends, obj)
             end
           rescue Exception => ex

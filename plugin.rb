@@ -11,7 +11,8 @@ module TwitterBot
     end
 
     def on_event(type, &blk)
-      @event = { :type => type, :blk => blk }
+      event[:type] = type
+      event[:blk] = blk
     end
 
     def twitter

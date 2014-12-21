@@ -15,7 +15,7 @@ tokens.each do |token|
     files.each do |file|
       account.add_plugin(file)
     end
-    account.start_streaming
+    account.start
   end
 end
 

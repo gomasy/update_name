@@ -19,9 +19,9 @@ end
 
 on_event(:tweet) do |obj|
   case CGI.unescapeHTML(obj.text)
-  when /^(?!RT).*@#{screen_name}\supdate_name\s(.+?)$/
+  when /^(?!RT).*@#{screen_name}\supdate_name\s((.|\n)+?)$/
     update_name(obj, $1)
-  when /^(?!RT)(.+?)(\(\s?@#{screen_name}\s?\)|（\s?@#{screen_name}\s?）)$/
+  when /^(?!RT)((.|\n)+?)(\(\s?@#{screen_name}\s?\)|（\s?@#{screen_name}\s?）)$/
     update_name(obj, $1)
   end
 end

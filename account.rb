@@ -16,22 +16,7 @@ module TwitterBot
     def start
       loop do
         @stream.user do |obj|
-          begin
-            case obj
-            when Twitter::Tweet
-              callback(:tweet, obj) if is_allowed?(obj.user.id)
-            when Twitter::Streaming::DeletedTweet
-              callback(:delete, obj) if is_allowed?(obj.user_id)
-            when Twitter::Streaming::Event
-              callback(:event, obj) if is_allowed?(obj.source.id)
-            when Twitter::Streaming::FriendList
-              @followings = obj
-              @followings << user.id
-              callback(:friends, obj)
-            end
-          rescue Exception => ex
-            puts "System -> #{ex.message}"
-          end
+          extract_obj(obj)
         end
       end
     end
@@ -46,6 +31,23 @@ module TwitterBot
     private
     def callback(type, obj)
       @callbacks[type].each{|c|c.call(obj)} if @callbacks.key?(type)
+    end
+
+    def extract_obj(obj)
+      case obj
+      when Twitter::Tweet
+        callback(:tweet, obj) if is_allowed?(obj.user.id)
+      when Twitter::Streaming::DeletedTweet
+        callback(:delete, obj) if is_allowed?(obj.user_id)
+      when Twitter::Streaming::Event
+        callback(:event, obj) if is_allowed?(obj.source.id)
+      when Twitter::Streaming::FriendList
+        @followings = obj
+        @followings << user.id
+        callback(:friends, obj)
+      end
+    rescue Exception => ex
+      puts "System -> #{ex.message}"
     end
 
     def is_allowed?(user_id)

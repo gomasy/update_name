@@ -15,8 +15,12 @@ module TwitterBot
 
     def start
       loop do
-        @stream.user do |obj|
-          extract_obj(obj)
+        begin
+          @stream.user do |obj|
+            extract_obj(obj)
+          end
+        rescue Exception => ex
+          puts "System -> #{ex.message}"
         end
       end
     end
@@ -46,8 +50,6 @@ module TwitterBot
         @followings << user.id
         callback(:friends, obj)
       end
-    rescue Exception => ex
-      puts "System -> #{ex.message}"
     end
 
     def is_allowed?(user_id)

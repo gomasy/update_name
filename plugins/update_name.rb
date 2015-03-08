@@ -1,5 +1,3 @@
-# coding: utf-8
-
 require "cgi"
 
 def update_name(obj, name)

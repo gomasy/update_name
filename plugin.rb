@@ -1,5 +1,3 @@
-# coding: utf-8
-
 module TwitterBot
   class Plugin
     attr_reader :event

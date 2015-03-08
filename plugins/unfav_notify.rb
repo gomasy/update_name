@@ -1,5 +1,3 @@
-# coding: utf-8
-
 on_event(:event) do |obj|
   case obj.name
   when :unfavorite

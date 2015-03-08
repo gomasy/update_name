@@ -1,5 +1,3 @@
-# coding: utf-8
-
 require "cgi"
 
 on_event(:tweet) do |obj|

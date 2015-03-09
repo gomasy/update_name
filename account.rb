@@ -15,7 +15,11 @@ module TwitterBot
       loop do
         begin
           @stream.user do |obj|
-            extract_obj(obj)
+            t = Thread.new do
+              extract_obj(obj)
+            end
+
+            t.join
           end
         rescue Exception => ex
           puts "System -> #{ex.message}"

@@ -15,7 +15,8 @@ module TwitterBot
       loop do
         begin
           @stream.user do |obj|
-            t = Thread.new do
+            t = []
+            t << Thread.new do
               extract_obj(obj)
             end
 

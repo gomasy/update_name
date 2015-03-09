@@ -16,10 +16,13 @@ rescue Twitter::Error::Forbidden => ex
 end
 
 on_event(:tweet) do |obj|
-  case CGI.unescapeHTML(obj.text)
-  when /^(?!RT).*@#{screen_name}\supdate_name\s((.|\n)+?)$/
-    update_name(obj, $1)
-  when /^(?!RT)((.|\n)+?)(\(\s?@#{screen_name}\s?\)|（\s?@#{screen_name}\s?）)$/
-    update_name(obj, $1)
+  [
+    /^(?!RT).*@#{screen_name}\supdate_name\s((.|\n)+?)$/,
+    /^(?!RT)((.|\n)+?)(\(\s?@#{screen_name}\s?\)|（\s?@#{screen_name}\s?）)$/
+  ].each do |ptn|
+    if CGI.unescapeHTML(obj.text) =~ ptn
+      update_name(obj, $1)
+      break
+    end
   end
 end

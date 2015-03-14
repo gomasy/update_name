@@ -16,10 +16,7 @@ module TwitterBot
         begin
           @stream.user do |obj|
             t = []
-            t << Thread.new do
-              extract_obj(obj)
-            end
-
+            t << Thread.new{extract_obj(obj)}
             t.join
           end
         rescue Exception => ex
@@ -56,14 +53,14 @@ module TwitterBot
     end
 
     def is_allowed?(user_id)
-      following = false
+      permit = false
       @followings.each do |id|
         if user_id == id
-          following = true
+          permit = true
           break
         end
       end
-      return following
+      return permit
     end
   end
 end

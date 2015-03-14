@@ -2,12 +2,14 @@ require "twitter"
 
 module TwitterBot
   class Account
+    attr_accessor :config
     attr_reader :rest, :user
 
-    def initialize(token)
-      @rest = Twitter::REST::Client.new(token)
-      @stream = Twitter::Streaming::Client.new(token)
+    def initialize(config)
+      @rest = Twitter::REST::Client.new(config)
+      @stream = Twitter::Streaming::Client.new(config)
       @user = @rest.verify_credentials
+      @config = config
       @callbacks = {}
     end
 
@@ -44,17 +46,18 @@ module TwitterBot
       when Twitter::Streaming::DeletedTweet
         callback(:delete, obj) if is_allowed?(obj.user_id)
       when Twitter::Streaming::Event
-        callback(:event, obj) if is_allowed?(obj.source.id)
+        callback(:event, obj) if is_allowed?(obj.source.id) ||
+          obj.name == :follow || obj.name == :unfollow
       when Twitter::Streaming::FriendList
-        @followings = obj
-        @followings << user.id
+        @config["followings"] = obj
+        @config["followings"] << user.id
         callback(:friends, obj)
       end
     end
 
     def is_allowed?(user_id)
       permit = false
-      @followings.each do |id|
+      @config["followings"].each do |id|
         if user_id == id
           permit = true
           break

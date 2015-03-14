@@ -5,7 +5,7 @@ require "yaml"
 require "./account.rb"
 require "./plugin.rb"
 
-tokens = YAML.load_file("./keys.yml")
+tokens = YAML.load_file("./config.yml")
 tokens.each do |token|
   @threads ||= []
   @threads << Thread.new do

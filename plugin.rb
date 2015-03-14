@@ -13,6 +13,10 @@ module TwitterBot
       event[:type], event[:blk] = type, blk
     end
 
+    def config
+      @account.config
+    end
+
     def twitter
       @account.rest
     end

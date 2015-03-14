@@ -1,7 +1,7 @@
 require "cgi"
 
 def update_name(obj, name)
-  name.sub!(/@|＠/, "@\u200b")
+  name.sub!(/@/, "@\u200b")
   twitter.update_profile(:name => name)
   twitter.update(
     "@#{obj.user.screen_name} のせいで「#{name}」に改名する羽目になりました",

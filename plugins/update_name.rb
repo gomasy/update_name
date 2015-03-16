@@ -8,7 +8,7 @@ def update_name(obj, name)
 rescue Twitter::Error::Forbidden => ex
   @tw = "@#{obj.user.screen_name} #{ex.message}"
 ensure
-  twitter.update(@tw, in_reply_to_status_id => obj.id)
+  twitter.update(@tw, :in_reply_to_status_id => obj.id)
 end
 
 on_event(:tweet) do |obj|

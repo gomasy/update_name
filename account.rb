@@ -63,7 +63,8 @@ module TwitterBot
           break
         end
       end
-      return permit
+
+      permit
     end
   end
 end

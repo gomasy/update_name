@@ -3,7 +3,7 @@ require "cgi"
 def update_name(obj, name)
   name.sub!(/@/, "@\u200b")
   twitter.update_profile(:name => name)
-  puts "System -> renamed to \'#{name}\' by @#{obj.user.screen_name}"
+  STDERR.puts "System -> Renamed to \'#{name}\' by @#{obj.user.screen_name}"
   @tw = "@#{obj.user.screen_name} のせいで「#{name}」に改名する羽目になりました"
 rescue Twitter::Error::Forbidden => ex
   @tw = "@#{obj.user.screen_name} #{ex.message}"

@@ -1,5 +1,3 @@
 on_event(:tweet) do |obj|
-  if obj.text == "Yo"
-    twitter.update("Yo")
-  end
+  twitter.update("Yo") if obj.text == "Yo"
 end

@@ -79,6 +79,7 @@ module TwitterBot
         if obj.source.id != @user.id && @config["auto_fb"]
           @rest.follow(obj.source.id)
           @config["followings"] << obj.source.id
+          STDERR.puts "System -> Followed to @#{obj.source.screen_name}"
         end
       when :unfollow
         @config["followings"].delete(obj.target.id)

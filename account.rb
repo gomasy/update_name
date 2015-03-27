@@ -22,7 +22,7 @@ module TwitterBot
             t.join
           end
         rescue Exception => ex
-          puts "System -> #{ex.message}"
+          STDERR.puts "Exception -> #{ex.message}"
         end
       end
     end
@@ -46,11 +46,12 @@ module TwitterBot
       when Twitter::Streaming::DeletedTweet
         callback(:delete, obj) if is_allowed?(obj.user_id)
       when Twitter::Streaming::Event
-        callback(:event, obj) if is_allowed?(obj.source.id) ||
-          obj.name == :follow || obj.name == :unfollow
+        if is_allowed?(obj.source.id) || obj.name == :follow || obj.name == :unfollow
+          update_follow_list(obj)
+          callback(:event, obj)
+        end
       when Twitter::Streaming::FriendList
-        @config["followings"] = obj
-        @config["followings"] << user.id
+        init_follow_list(obj)
         callback(:friends, obj)
       end
     end
@@ -65,6 +66,23 @@ module TwitterBot
       end
 
       permit
+    end
+
+    def init_follow_list(obj)
+      @config["followings"] = obj
+      @config["followings"] << @user.id
+    end
+
+    def update_follow_list(obj)
+      case obj.name
+      when :follow
+        if obj.source.id != @user.id && @config["auto_fb"]
+          @rest.follow(obj.source.id)
+          @config["followings"] << obj.source.id
+        end
+      when :unfollow
+        @config["followings"].delete(obj.target.id)
+      end
     end
   end
 end

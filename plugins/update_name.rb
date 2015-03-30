@@ -5,8 +5,8 @@ def update_name(obj, name)
   twitter.update_profile(:name => name)
   STDERR.puts "System -> Renamed to \'#{name}\' by @#{obj.user.screen_name}"
   @tw = "@#{obj.user.screen_name} のせいで「#{name}」に改名する羽目になりました"
-rescue Twitter::Error::Forbidden => ex
-  @tw = "@#{obj.user.screen_name} #{ex.message}"
+rescue Twitter::Error::Forbidden => e
+  @tw = "@#{obj.user.screen_name} #{e.message}"
 ensure
   twitter.update(@tw, :in_reply_to_status_id => obj.id)
 end

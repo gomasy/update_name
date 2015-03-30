@@ -21,8 +21,6 @@ module TwitterBot
             t << Thread.new{extract_obj(obj)}
             t.join
           end
-        rescue Exception => ex
-          STDERR.puts "Exception -> #{ex.message}"
         end
       end
     end
@@ -36,36 +34,53 @@ module TwitterBot
 
     private
     def callback(type, obj)
-      @callbacks[type].each{|c|c.call(obj)} if @callbacks.key?(type)
+      @callbacks[type].each{|c|c.call(obj)} if @callbacks.key?(type) && is_allowed?(obj)
     end
 
     def extract_obj(obj)
       case obj
-      when Twitter::Tweet
-        callback(:tweet, obj) if is_allowed?(obj.user.id)
-      when Twitter::Streaming::DeletedTweet
-        callback(:delete, obj) if is_allowed?(obj.user_id)
+      when Twitter::Tweet then callback(:tweet, obj)
+      when Twitter::Streaming::DeletedTweet then callback(:delete, obj)
       when Twitter::Streaming::Event
-        if is_allowed?(obj.source.id) || obj.name == :follow || obj.name == :unfollow
-          update_follow_list(obj)
-          callback(:event, obj)
-        end
+        update_follow_list(obj)
+        callback(:event, obj)
       when Twitter::Streaming::FriendList
         init_follow_list(obj)
         callback(:friends, obj)
       end
+    rescue Exception => e
+      puts "Exception -> #{e.message}"
     end
 
-    def is_allowed?(user_id)
-      permit = false
-      @config["followings"].each do |id|
-        if user_id == id
-          permit = true
-          break
+    def get_user_id(obj)
+      case obj
+      when Twitter::Tweet then obj.user.id
+      when Twitter::Streaming::DeletedTweet then obj.user_id
+      when Twitter::Streaming::Event then obj.source.id
+      end
+    end
+
+    def is_allowed?(obj)
+      is_pmt = (obj != Twitter::Streaming::FriendList ? true : false)
+      if !is_pmt
+        user_id = get_user_id(obj)
+        @config["followings"].each do |id|
+          if user_id == id
+            is_pmt = true
+            break
+          end
         end
       end
 
-      permit
+      is_pmt
+    end
+
+    def do_follow(id, sn)
+      if id != @user.id && @config["auto_fb"]
+        @rest.follow(id)
+        @config["followings"] << id
+        STDERR.puts "System -> Followed to @#{sn}"
+      end
     end
 
     def init_follow_list(obj)
@@ -75,14 +90,8 @@ module TwitterBot
 
     def update_follow_list(obj)
       case obj.name
-      when :follow
-        if obj.source.id != @user.id && @config["auto_fb"]
-          @rest.follow(obj.source.id)
-          @config["followings"] << obj.source.id
-          STDERR.puts "System -> Followed to @#{obj.source.screen_name}"
-        end
-      when :unfollow
-        @config["followings"].delete(obj.target.id)
+      when :follow then do_follow(obj.source.id, obj.source.screen_name)
+      when :unfollow then @config["followings"].delete(obj.target.id)
       end
     end
   end

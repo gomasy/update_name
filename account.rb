@@ -3,7 +3,7 @@ require "twitter"
 module TwitterBot
   class Account
     attr_accessor :config
-    attr_reader :rest, :user
+    attr_reader :rest, :stream, :user
 
     def initialize(config)
       @rest = Twitter::REST::Client.new(config)
@@ -18,7 +18,7 @@ module TwitterBot
         begin
           @stream.user do |obj|
             t = []
-            t << Thread.new{extract_obj(obj)}
+            t << Thread.new do extract_obj(obj) end
             t.join
           end
         end
@@ -34,7 +34,7 @@ module TwitterBot
 
     private
     def callback(type, obj)
-      @callbacks[type].each{|c|c.call(obj)} if @callbacks.key?(type) && is_allowed?(obj)
+      @callbacks[type].each do |c|c.call(obj) end if @callbacks.key?(type) && is_allowed?(obj)
     end
 
     def extract_obj(obj)

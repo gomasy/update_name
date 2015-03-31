@@ -21,6 +21,10 @@ module TwitterBot
       @account.rest
     end
 
+    def stream
+      @account.stream
+    end
+
     def screen_name
       @account.user.screen_name
     end

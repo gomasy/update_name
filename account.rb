@@ -61,7 +61,7 @@ module TwitterBot
     end
 
     def is_allowed?(obj)
-      is_pmt = (obj != Twitter::Streaming::FriendList ? true : false)
+      is_pmt = (obj.class == Twitter::Streaming::FriendList ? true : false)
       if !is_pmt
         user_id = get_user_id(obj)
         @config["followings"].each do |id|

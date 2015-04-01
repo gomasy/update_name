@@ -21,6 +21,9 @@ module TwitterBot
             t << Thread.new do extract_obj(obj) end
             t.join
           end
+        rescue Exception => e
+          puts "Exception -> #{e.message}"
+          sleep(5)
         end
       end
     end

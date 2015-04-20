@@ -19,7 +19,7 @@ tokens.each do |token|
       account.add_plugin(file)
     end
     account.start
-  end.freeze
+  end
 end
 
 @threads.each do |thread|

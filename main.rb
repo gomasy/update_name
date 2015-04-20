@@ -7,6 +7,10 @@ require "./plugin.rb"
 
 tokens = YAML.load_file("./config.yml")
 tokens.each do |token|
+  token.each_value do |v|
+    v.freeze
+  end
+
   @threads ||= []
   @threads << Thread.new do
     account = TwitterBot::Account.new(token)
@@ -15,7 +19,7 @@ tokens.each do |token|
       account.add_plugin(file)
     end
     account.start
-  end
+  end.freeze
 end
 
 @threads.each do |thread|

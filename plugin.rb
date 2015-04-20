@@ -4,13 +4,15 @@ module TwitterBot
 
     def initialize(account, filename)
       @account = account
-      @event = {}
 
       self.instance_eval(File.read(filename))
     end
 
     def on_event(type, &blk)
-      event[:type], event[:blk] = type, blk
+      @event = {
+        :type => type,
+        :blk => blk
+      }.freeze
     end
 
     def config
@@ -26,11 +28,11 @@ module TwitterBot
     end
 
     def screen_name
-      @account.user.screen_name
+      @account.user.screen_name.freeze
     end
 
     def user_id
-      @account.user.id
+      @account.user.id.freeze
     end
   end
 end

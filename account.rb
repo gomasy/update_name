@@ -5,11 +5,11 @@ module TwitterBot
     attr_accessor :config
     attr_reader :rest, :stream, :user
 
-    def initialize(config)
-      @rest = Twitter::REST::Client.new(config)
-      @stream = Twitter::Streaming::Client.new(config)
+    def initialize(token)
+      @rest = Twitter::REST::Client.new(token)
+      @stream = Twitter::Streaming::Client.new(token)
       @user = @rest.verify_credentials
-      @config = config
+      @config = token
       @callbacks = {}
     end
 
@@ -37,7 +37,11 @@ module TwitterBot
 
     private
     def callback(type, obj)
-      @callbacks[type].each do |c|c.call(obj) end if @callbacks.key?(type) && is_allowed?(obj)
+      if @callbacks.key?(type) && is_allowed?(obj)
+        @callbacks[type].each do |c|
+          c.call(obj)
+        end
+      end
     end
 
     def extract_obj(obj)
@@ -60,7 +64,7 @@ module TwitterBot
       when Twitter::Tweet then obj.user.id
       when Twitter::Streaming::DeletedTweet then obj.user_id
       when Twitter::Streaming::Event then obj.source.id
-      end
+      end.freeze
     end
 
     def is_allowed?(obj)
@@ -75,7 +79,7 @@ module TwitterBot
         end
       end
 
-      is_pmt
+      is_pmt.freeze
     end
 
     def do_follow(id, sn)

@@ -21,10 +21,7 @@ module TwitterBot
         begin
           @stream.user do |obj|
             t = []
-            t << Thread.new do
-              extract_obj(obj)
-            end
-
+            t << Thread.new do extract_obj(obj) end
             t.join
           end
         rescue Exception => e

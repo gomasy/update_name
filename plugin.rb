@@ -4,6 +4,7 @@ module TwitterBot
 
     def initialize(account, filename)
       @account = account
+      @event = {}
 
       self.instance_eval(File.read(filename))
     end
@@ -25,6 +26,10 @@ module TwitterBot
 
     def stream
       @account.stream
+    end
+
+    def log
+      @account.log
     end
 
     def screen_name

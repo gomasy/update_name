@@ -1,3 +1,3 @@
 on_event(:friends) do |obj|
-  STDERR.puts "System -> Start streaming of @#{screen_name}..."
+  log.info "[System] Connecting to userstream..."
 end

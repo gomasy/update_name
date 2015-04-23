@@ -3,7 +3,7 @@ require "twitter"
 module TwitterBot
   class Account
     attr_accessor :config
-    attr_reader :rest, :stream, :user
+    attr_reader :rest, :stream, :user, :log
 
     def initialize(token)
       @rest = Twitter::REST::Client.new(token)
@@ -11,6 +11,9 @@ module TwitterBot
       @user = @rest.verify_credentials
       @config = token
       @callbacks = {}
+
+      @log = Logger.new(OPTS["log-file"])
+      @log.progname = @user.screen_name
     end
 
     def start
@@ -18,11 +21,14 @@ module TwitterBot
         begin
           @stream.user do |obj|
             t = []
-            t << Thread.new do extract_obj(obj) end
+            t << Thread.new do
+              extract_obj(obj)
+            end
+
             t.join
           end
         rescue Exception => e
-          puts "Exception -> #{e.message}"
+          log.error "[Exeption] #{e.message}"
           sleep(5)
         end
       end
@@ -56,7 +62,8 @@ module TwitterBot
         callback(:friends, obj)
       end
     rescue Exception => e
-      puts "Exception -> #{e.message}"
+      log.fatal "[Exception]\n<red>#{e.backtrace.join("\n\t")}</red>"
+      exit
     end
 
     def get_user_id(obj)
@@ -71,21 +78,17 @@ module TwitterBot
       is_pmt = (obj.class == Twitter::Streaming::FriendList ? true : false)
       if !is_pmt
         user_id = get_user_id(obj)
-        @config["followings"].each do |id|
-          if user_id == id
-            is_pmt = true
-            break
-          end
-        end
+        is_pmt = @config["followings"].include?(user_id)
       end
 
       is_pmt.freeze
     end
 
-    def do_follow(id, sn)
+    def follow(id, sn)
       if id != @user.id && @config["auto_fb"]
         @rest.follow(id)
         @config["followings"] << id
+
         STDERR.puts "System -> Followed to @#{sn}"
       end
     end
@@ -97,7 +100,7 @@ module TwitterBot
 
     def update_follow_list(obj)
       case obj.name
-      when :follow then do_follow(obj.source.id, obj.source.screen_name)
+      when :follow then follow(obj.source.id, obj.source.screen_name)
       when :unfollow then @config["followings"].delete(obj.target.id)
       end
     end

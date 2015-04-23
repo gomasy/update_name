@@ -28,6 +28,10 @@ module TwitterBot
       @account.stream
     end
 
+    def log
+      @account.log
+    end
+
     def screen_name
       @account.user.screen_name.freeze
     end

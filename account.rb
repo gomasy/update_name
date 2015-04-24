@@ -21,10 +21,7 @@ module TwitterBot
         begin
           @stream.user do |obj|
             t = []
-            t << Thread.new do
-              extract_obj(obj)
-            end
-
+            t << Thread.new do extract_obj(obj) end
             t.join
           end
         rescue Exception => e
@@ -62,7 +59,7 @@ module TwitterBot
         callback(:friends, obj)
       end
     rescue Exception => e
-      log.fatal "[Exception]\n<red>#{e.backtrace.join("\n\t")}</red>"
+      log.fatal "[Exception]\n\t<red>#{e.backtrace.join("\n\t")}</red>"
       exit
     end
 

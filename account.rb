@@ -59,7 +59,7 @@ module TwitterBot
         callback(:friends, obj)
       end
     rescue Exception => e
-      log.fatal "[Exception]\n<red>#{e.backtrace.join("\n\t")}</red>"
+      log.fatal "[Exception]\n\t<red>#{e.backtrace.join("\n\t")}</red>"
       exit
     end
 

@@ -17,13 +17,15 @@ def update_table(obj, cmd, data, tbl)
   case cmd
   when "add"
     tbl << data
-    @tw = "@#{obj.user.screen_name} Just added #{data} to abuse list".freeze
+    mes = "Just added #{data} to abuse list".freeze
   when "del"
     tbl.delete(data)
-    @tw = "@#{obj.user.screen_name} Just deleted #{data} to abuse list".freeze
+    mes = "Just deleted #{data} to abuse list".freeze
   end
 
-  twitter.update(@tw, :in_reply_to_status_id => obj.id)
+  log.info "<bold>#{mes}</bold>"
+  tw = "@#{obj.user.screen_name} #{mes}"
+  twitter.update(tw, :in_reply_to_status_id => obj.id)
 end
 
 def abuse(obj, cmd, type, data)
@@ -48,6 +50,8 @@ def abuse_word?(word)
 end
 
 def say(obj, str)
+  load_table(FILE)
+
   if abuse_user?(obj.user.id)
     @tw = "@#{obj.user.screen_name} あなたはこのコマンドを使用する権限がありません".freeze
   elsif abuse_word?(str)

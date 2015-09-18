@@ -25,7 +25,7 @@ module TwitterBot
             t.join
           end
         rescue Exception => e
-          log.error "[Exception] #{e.message}"
+          log.error %([Exception] #{e.message})
           sleep(5)
         end
       end
@@ -59,7 +59,7 @@ module TwitterBot
         callback(:friends, obj)
       end
     rescue Exception => e
-      log.fatal "[Exception]<red>\n\t#{e.backtrace.join("\n\t")}</red>"
+      log.fatal %([Exception]<red>\n\t#{e.backtrace.join("\n\t")}</red>)
       exit
     end
 
@@ -86,7 +86,7 @@ module TwitterBot
         @rest.follow(id)
         @config["followings"] << id
 
-        STDERR.puts "System -> Followed to @#{sn}"
+        STDERR.puts %(System -> Followed to @#{sn})
       end
     end
 

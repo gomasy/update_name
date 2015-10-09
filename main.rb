@@ -20,9 +20,6 @@ module TwitterBot
 
       tokens = YAML.load_file(file)
       tokens.each do |token|
-        token.each_value do |v|
-          v.freeze
-        end
         threads << create_thread(token)
       end
 

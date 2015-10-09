@@ -10,10 +10,7 @@ module TwitterBot
     end
 
     def on_event(type, &blk)
-      @event = {
-        :type => type,
-        :blk => blk
-      }.freeze
+      @event = { :type => type, :blk => blk }.freeze
     end
 
     def config

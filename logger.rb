@@ -16,10 +16,7 @@ module TwitterBot
 
       @level = LEVEL[OPTS["log-level"]]
       @formatter = proc do |sev, date, name, msg|
-        fmt = %(<green>[#{date}] </green>#{sev} -- #{name} #{msg}\n).termcolor
-
-        if !stdout?(OPTS["log-file"]) then fmt.gsub(/\e\[(\d+;?)+m/, "")
-        else fmt end
+        %(<blue>[#{date}] </blue>#{sev} -- #{name} #{msg}\n).termcolor
       end
     end
 

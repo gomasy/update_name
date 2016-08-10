@@ -1,7 +1,10 @@
 require "twitter"
+require "./event.rb"
 
 module TwitterBot
   class Account
+    include TwitterBot::Event
+
     attr_accessor :config
     attr_reader :rest, :stream, :user, :log
 
@@ -18,15 +21,11 @@ module TwitterBot
 
     def start
       loop do
-        begin
-          @stream.user do |obj|
-            t = []
-            t << Thread.new do extract_obj(obj) end
-            t.join
-          end
-        rescue Exception => e
-          log.error %([Exception] #{e.message})
-          sleep(5)
+        @stream.user do |obj|
+          t = []
+          t << Thread.new do extract(obj) end
+
+          t.join
         end
       end
     end
@@ -40,66 +39,24 @@ module TwitterBot
 
     private
     def callback(type, obj)
-      if @callbacks.key?(type) && is_allowed?(obj)
+      if @callbacks.key?(type) && allowed?(obj)
         @callbacks[type].each do |c|
           c.call(obj)
         end
       end
-    end
-
-    def extract_obj(obj)
-      case obj
-      when Twitter::Tweet then callback(:tweet, obj)
-      when Twitter::Streaming::DeletedTweet then callback(:delete, obj)
-      when Twitter::Streaming::Event
-        update_follow_list(obj)
-        callback(:event, obj)
-      when Twitter::Streaming::FriendList
-        init_follow_list(obj)
-        callback(:friends, obj)
-      end
     rescue Exception => e
-      log.fatal %([Exception]<red>\n\t#{e.backtrace.join("\n\t")}</red>)
-      exit
+      log.fatal %([Exception]<red>\n\t#{e}\n\t#{e.backtrace.join("\n\t")}</red>)
     end
 
-    def get_user_id(obj)
-      case obj
-      when Twitter::Tweet then obj.user.id
-      when Twitter::Streaming::DeletedTweet then obj.user_id
-      when Twitter::Streaming::Event then obj.source.id
-      end.freeze
+    def extract(obj)
+      callback(event_type[obj.class], obj)
+    rescue Exception => e
+      log.fatal %([Exception]<red>\n\t#{e}\n\t#{e.backtrace.join("\n\t")}</red>)
     end
 
-    def is_allowed?(obj)
-      is_pmt = (obj.class == Twitter::Streaming::FriendList ? true : false)
-      if !is_pmt
-        user_id = get_user_id(obj)
-        is_pmt = @config["followings"].include?(user_id)
-      end
-
-      is_pmt.freeze
-    end
-
-    def follow(id, sn)
-      if id != @user.id && @config["auto_fb"]
-        @rest.follow(id)
-        @config["followings"] << id
-
-        STDERR.puts %(System -> Followed to @#{sn})
-      end
-    end
-
-    def init_follow_list(obj)
-      @config["followings"] = obj
-      @config["followings"] << @user.id
-    end
-
-    def update_follow_list(obj)
-      case obj.name
-      when :follow then follow(obj.source.id, obj.source.screen_name)
-      when :unfollow then @config["followings"].delete(obj.target.id)
-      end
+    def allowed?(obj)
+      obj.class != Twitter::Streaming::FriendList ?
+        @config[:friends].include?(user_id(obj)) : true
     end
   end
 end

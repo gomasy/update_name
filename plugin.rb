@@ -30,11 +30,11 @@ module TwitterBot
     end
 
     def screen_name
-      @account.user.screen_name.freeze
+      @account.user.screen_name
     end
 
     def user_id
-      @account.user.id.freeze
+      @account.user.id
     end
   end
 end

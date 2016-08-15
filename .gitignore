@@ -1,5 +1,7 @@
 *.gem
 *.rbc
+*.yml
+*.lock
 .bundle
 .config
 coverage
@@ -7,6 +9,7 @@ InstalledFiles
 lib/bundler/man
 pkg
 rdoc
+vendor
 spec/reports
 test/tmp
 test/version_tmp
@@ -16,5 +19,3 @@ tmp
 .yardoc
 _yardoc
 doc/
-
-*.yml

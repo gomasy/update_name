@@ -24,6 +24,7 @@ $ nohup ./main.rb &> /dev/null &
 
 ## Require Gems
 * twitter >= 5.7.0
+* termcolor >= 1.2.2
 
 ## LICENSE
 Copryright 2013-2016, Gomasy  

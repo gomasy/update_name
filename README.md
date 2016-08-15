@@ -26,6 +26,6 @@ $ nohup ./main.rb &> /dev/null &
 * twitter >= 5.7.0
 
 ## LICENSE
-Copryright 2013-2014, Gomasy  
+Copryright 2013-2016, Gomasy  
 Licensed MIT  
 http://opensource.org/licenses/mit-license.php

@@ -7,8 +7,8 @@ RUN pacman -Syu --noconfirm
 RUN pacman-db-upgrade
 RUN update-ca-trust
 
-# Install cowsay
-RUN pacman -S --noconfirm cowsay
+# Install some packages
+RUN pacman -S --noconfirm cowsay jq
 
 # Delete unnecessary files
 RUN pacman -Scc --noconfirm

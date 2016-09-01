@@ -6,8 +6,8 @@ end
 
 on_event(:tweet) do |obj|
   if CGI.unescapeHTML(obj.text) =~ /^(?!RT).*@#{screen_name}\sshell:\s?((.|\n)+?)$/
-    r = docker_run($1)
     log.info %(<bold>[System] Issued command: '#{$1}' by @#{obj.user.screen_name}</bold>)
+    r = docker_run($1)
 
     if "@#{obj.user.screen_name} #{r}".length > 140
       tw = "@#{obj.user.screen_name} ...#{r[obj.user.screen_name.length + r.length - 135..r.length]}"

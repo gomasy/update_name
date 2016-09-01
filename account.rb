@@ -28,7 +28,7 @@ module TwitterBot
 
             t.join
           end
-        rescue EOFError
+        rescue
           log.info %(<bold>[System] Stream closed. reconnecting...</bold>)
         end
       end

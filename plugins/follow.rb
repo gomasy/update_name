@@ -3,7 +3,7 @@ def follow(id, sn)
     @rest.follow(id)
     @config[:friends] << id
 
-    log.info %(System -> Followed to @#{sn})
+    log.info %([System] Followed to @#{sn})
   end
 end
 

@@ -29,7 +29,7 @@ module TwitterBot
             t.join
           end
         rescue
-          log.info %(<bold>[System] Stream closed. reconnecting...</bold>)
+          log.warn %(<bold>[System] Stream closed. reconnecting...</bold>)
         end
       end
     end

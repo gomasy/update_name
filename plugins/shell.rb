@@ -1,7 +1,7 @@
 require "cgi"
 
 def docker_run(cmd)
-  `docker run -it --rm base/archlinux /bin/sh -c "timeout 1m #{cmd.gsub(/"|'/, "\'")} 2>&1"`
+  `docker run -it --rm base/archlinux /bin/timeout 1m /bin/sh -c "#{cmd.gsub(/"|'/, "\'")} 2>&1"`
 end
 
 on_event(:tweet) do |obj|

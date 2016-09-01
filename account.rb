@@ -20,17 +20,17 @@ module TwitterBot
     end
 
     def start
-      begin
-        loop do
+      loop do
+        begin
           @stream.user do |obj|
             t = []
             t << Thread.new do extract(obj) end
 
             t.join
           end
+        rescue EOFError
+          log.info %(<bold>[System] Stream closed. reconnecting...</bold>)
         end
-      rescue EOFError
-        log.info %(<bold>[System] Stream closed. reconnecting...</bold>)
       end
     end
 

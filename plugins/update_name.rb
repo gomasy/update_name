@@ -1,5 +1,3 @@
-require "cgi"
-
 def update_name(obj, name)
   name = name.sub(/@/, "@\u200b")
   twitter.update_profile(:name => name)
@@ -17,7 +15,7 @@ on_event(:tweet) do |obj|
     /^(?!RT).*@#{screen_name}\supdate_name\s((.|\n)+?)$/,
     /^(?!RT)((.|\n)+?)(\(\s?@#{screen_name}\s?\)|（\s?@#{screen_name}\s?）)$/
   ].freeze.each do |ptn|
-    if CGI.unescapeHTML(obj.text) =~ ptn
+    if obj.text =~ ptn
       update_name(obj, $1)
       break
     end

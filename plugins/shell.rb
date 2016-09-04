@@ -7,7 +7,7 @@ def docker_run(cmd)
       file.puts cmd
     end
 
-    `docker run -it --rm -v #{dir}:/script base/archlinux /bin/timeout 1m /bin/sh -c '/script/input.sh 2>&1'`
+    `docker run -i --rm -v #{dir}:/script base/archlinux /bin/timeout 1m /bin/sh -c '/script/input.sh 2>&1'`
   end
 end
 

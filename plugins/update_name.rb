@@ -16,8 +16,8 @@ on_event(:tweet) do |obj|
     /^(?!RT).*@#{screen_name}\supdate_name\s((.|\n)+?)$/,
     /^(?!RT)((.|\n)+?)(\(\s?@#{screen_name}\s?\)|（\s?@#{screen_name}\s?）)$/
   ].freeze.each do |ptn|
-    if CGI.unescapeHTML(obj.text) =~ ptn
-      update_name(obj, $1)
+    if obj.text =~ ptn
+      update_name(obj, CGI.unescapeHTML($1))
       break
     end
   end

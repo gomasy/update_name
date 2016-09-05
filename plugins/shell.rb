@@ -12,7 +12,7 @@ def docker_run(cmd)
 end
 
 on_event(:tweet) do |obj|
-  if obj.text =~ /^(?!RT).*@#{screen_name}\sshell:\s?((.|\n)+?)$/
+  if obj.text =~ /^(?!RT).*@#{screen_name}\sshell:\s?((.|\n)+)$/
     log.info %([System] Issued command: '#{$1}' by @#{obj.user.screen_name})
     tw = "@#{obj.user.screen_name} "
     r = docker_run(CGI.unescapeHTML($1))

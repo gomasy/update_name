@@ -1,5 +1,3 @@
 on_event(:event) do |obj|
-  if obj.name == :unfollow
-    @config[:friends].delete(obj.target.id)
-  end
+  config[:friends].delete(obj.target.id) if obj.name == :unfollow
 end
